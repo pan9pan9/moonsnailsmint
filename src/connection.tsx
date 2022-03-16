@@ -287,8 +287,103 @@ import {
   
     return { txid, slot };
   };
-  
-  export const sendTransactionWithRetry = async (
+
+export const sendTransactions_2 = async (
+    connection: Connection,
+    wallet: any,
+    instructionSet: TransactionInstruction[][],
+    signersSet: Keypair[][],
+    sequenceType: SequenceType = SequenceType.Parallel,
+    commitment: Commitment = "singleGossip",
+    block?: BlockhashAndFeeCalculator
+): Promise<string[] | number> => {
+  if (!wallet.publicKey) throw new WalletNotConnectedError();
+
+  const unsignedTxns: Transaction[] = [];
+
+  if (!block) {
+    block = await connection.getRecentBlockhash(commitment);
+  }
+
+  for (let i = 0; i < instructionSet.length; i++) {
+    const instructions = instructionSet[i];
+    const signers = signersSet[i];
+
+    if (instructions.length === 0) {
+      continue;
+    }
+
+    let transaction = new Transaction();
+    instructions.forEach((instruction) => transaction.add(instruction));
+    transaction.recentBlockhash = block.blockhash;
+    transaction.setSigners(
+        // fee payed by the wallet owner
+        wallet.publicKey,
+        ...signers.map((s) => s.publicKey)
+    );
+
+    if (signers.length > 0) {
+      transaction.partialSign(...signers);
+    }
+
+    unsignedTxns.push(transaction);
+  }
+
+  const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+
+  const pendingTxns: Promise<{ txid: string; slot: number }>[] = [];
+
+  let breakEarlyObject = { breakEarly: false, i: 0 };
+  console.log(
+      "Signed txns length",
+      signedTxns.length,
+      "vs handed in length",
+      instructionSet.length
+  );
+
+  const txIds = [];
+  for (let i = 0; i < signedTxns.length; i++) {
+    const signedTxnPromise = sendSignedTransaction({
+      connection,
+      signedTransaction: signedTxns[i],
+    });
+
+    try {
+      const { txid } = await signedTxnPromise;
+      txIds.push(txid);
+    } catch (error) {
+      console.error(error);
+      // @ts-ignore
+      failCallback(signedTxns[i], i);
+      if (sequenceType === SequenceType.StopOnFailure) {
+        breakEarlyObject.breakEarly = true;
+        breakEarlyObject.i = i;
+      }
+    }
+
+    if (sequenceType !== SequenceType.Parallel) {
+      try {
+        await signedTxnPromise;
+      } catch (e) {
+        console.log("Caught failure", e);
+        if (breakEarlyObject.breakEarly) {
+          console.log("Died on ", breakEarlyObject.i);
+          return breakEarlyObject.i; // Return the txn we failed on by index
+        }
+      }
+    } else {
+      pendingTxns.push(signedTxnPromise);
+    }
+  }
+
+  if (sequenceType !== SequenceType.Parallel) {
+    await Promise.all(pendingTxns);
+  }
+
+  return txIds;
+};
+
+export const sendTransactionWithRetry = async (
     connection: Connection,
     wallet: any,
     instructions: TransactionInstruction[],
