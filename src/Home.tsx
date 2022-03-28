@@ -1,8 +1,6 @@
 import {useEffect, useState} from "react";
 import styled from "styled-components";
 import confetti from "canvas-confetti";
-import {sleep} from "./candy-machine"
-import toast from "react-hot-toast";
 import * as anchor from "@project-serum/anchor";
 import {LAMPORTS_PER_SOL, PublicKey} from "@solana/web3.js";
 import {useAnchorWallet} from "@solana/wallet-adapter-react";
@@ -18,7 +16,6 @@ import {
     awaitTransactionSignatureConfirmation,
     getCandyMachineState,
     mintOneToken,
-    mintMultiToken,
     mintOneToken_2,
     CANDY_MACHINE_PROGRAM,
 } from "./candy-machine";
@@ -390,7 +387,7 @@ const Home = (props: HomeProps) => {
             setWhitelistTokenBalance(balance);
             setIsActive(balance > 0);
         }
-        setItemsRedeemed(itemsRedeemed + 1);
+        setItemsRedeemed(itemsRedeemed + 2);
         const solFeesEstimation = 0.012; // approx
         if (!payWithSplToken && balance && balance > 0) {
             setBalance(balance - (whitelistEnabled ? whitelistPrice : price) - solFeesEstimation);
@@ -398,6 +395,23 @@ const Home = (props: HomeProps) => {
         setSolanaExplorerLink(cluster === "devnet" || cluster === "testnet"
             ? ("https://explorer.solana.com/address/" + mintPublicKey + "?cluster=" + cluster)
             : ("https://explorer.solana.com/address/" + mintPublicKey));
+        throwConfetti();
+    };
+
+    function displaySuccess_2(): void {
+        let remaining = itemsRemaining - 1;
+        setItemsRemaining(remaining);
+        setIsSoldOut(remaining === 0);
+        if (whitelistTokenBalance && whitelistTokenBalance > 0) {
+            let balance = whitelistTokenBalance - 1;
+            setWhitelistTokenBalance(balance);
+            setIsActive(balance > 0);
+        }
+        setItemsRedeemed(itemsRedeemed + 2);
+        const solFeesEstimation = 0.012; // approx
+        if (!payWithSplToken && balance && balance > 0) {
+            setBalance(balance - (whitelistEnabled ? whitelistPrice : price) - solFeesEstimation);
+        }
         throwConfetti();
     };
 
@@ -480,38 +494,55 @@ const Home = (props: HomeProps) => {
         try {
             setIsMinting(true);
             if (wallet && candyMachine?.program && wallet.publicKey) {
-                const mint = anchor.web3.Keypair.generate();
-                const mintTxId = (
-                    await mintOneToken_2(candyMachine, wallet.publicKey, mint)
-                )[0];
+                const mintTxId: any = (
+                    await mintOneToken_2(candyMachine, wallet.publicKey)
+                );
 
-                let status: any = {err: true};
-                if (mintTxId) {
-                    status = await awaitTransactionSignatureConfirmation(
-                        mintTxId,
-                        props.txTimeout,
-                        props.connection,
-                        'singleGossip',
-                        true,
-                    );
+                const promiseArray = [];
+
+                for (let index = 0; index < mintTxId.length; index++) {
+                    promiseArray.push(
+                        awaitTransactionSignatureConfirmation(
+                            mintTxId[index],
+                            props.txTimeout,
+                            props.connection,
+                            'singleGossip',
+                            true
+                            )
+                        );
                 }
 
-                if (!status?.err) {
+                const allTransactionsResult = await Promise.all(promiseArray);
+                let totalSuccess = 0;
+                let totalFailure = 0;
+                for (let index = 0; index < allTransactionsResult.length; index++) {
+                    const transactionStatus = allTransactionsResult[index];
+                    if (!transactionStatus?.err) {
+                        totalSuccess += 1;
+                    } else {
+                        totalFailure += 1;
+                    }
+                }
+                if (totalSuccess) {
                     setAlertState({
                         open: true,
-                        message: 'Congratulations! Mint succeeded!',
+                        message: `Congratulations! ${totalSuccess} mints succeeded!`,
                         severity: 'success',
                     });
-
                     // update front-end amounts
-                    displaySuccess(mint.publicKey);
-                } else {
+                    displaySuccess_2();
+                }
+
+                if (totalFailure) {
                     setAlertState({
                         open: true,
-                        message: 'Mint failed! Please try again!',
+                        message: `Some mints failed! ${totalFailure} mints failed!`,
                         severity: 'error',
                     });
+                    // update front-end amounts
+                    displaySuccess_2();
                 }
+
             }
         } catch (error: any) {
             // TODO: blech:
@@ -539,108 +570,6 @@ const Home = (props: HomeProps) => {
                 severity: "error",
             });
         } finally {
-            setIsMinting(false);
-        }
-    };
-    const onMint_2 = async () => {
-        try {
-            setIsMinting(true);
-            if (wallet && candyMachine?.program && wallet.publicKey) {
-                const oldBalance =
-                    (await props.connection.getBalance(wallet?.publicKey)) /
-                    LAMPORTS_PER_SOL;
-                const futureBalance = oldBalance - 1* 3;
-
-                const signedTransactions: any = await mintMultiToken(
-                    candyMachine,
-                    wallet.publicKey,
-                    3
-                );
-
-                const promiseArray = [];
-
-                for (
-                    let index = 0;
-                    index < signedTransactions.length;
-                    index++
-                ) {
-                    const tx = signedTransactions[index];
-                    promiseArray.push(
-                        awaitTransactionSignatureConfirmation(
-                            tx,
-                            props.txTimeout,
-                            props.connection,
-                            "singleGossip",
-                            true
-                        )
-                    );
-                }
-
-                const allTransactionsResult = await Promise.all(promiseArray);
-                let totalSuccess = 0;
-                let totalFailure = 0;
-
-                for (
-                    let index = 0;
-                    index < allTransactionsResult.length;
-                    index++
-                ) {
-                    const transactionStatus = allTransactionsResult[index];
-                    if (!transactionStatus?.err) {
-                        totalSuccess += 1;
-                    } else {
-                        totalFailure += 1;
-                    }
-                }
-
-                let newBalance =
-                    (await props.connection.getBalance(wallet?.publicKey)) /
-                    LAMPORTS_PER_SOL;
-
-                while (newBalance > futureBalance) {
-                    await sleep(1000);
-                    newBalance =
-                        (await props.connection.getBalance(wallet?.publicKey)) /
-                        LAMPORTS_PER_SOL;
-                }
-
-                if (totalSuccess) {
-                    toast.success(
-                        `Congratulations! ${totalSuccess} mints succeeded!`,
-                        { duration: 6000, position: "bottom-center" }
-                    );
-                }
-
-                if (totalFailure) {
-                    toast.error(
-                        `Some mints failed! ${totalFailure} mints failed!`,
-                        { duration: 6000, position: "bottom-center" }
-                    );
-                }
-            }
-        } catch (error: any) {
-            let message = error.message || "Minting failed! Please try again!";
-            if (!error.message) {
-                if (error.message.indexOf("0x138")) {
-                } else if (error.message.indexOf("0x137")) {
-                    message = `SOLD OUT!`;
-                } else if (error.message.indexOf("0x135")) {
-                    message = `Insufficient funds to mint. Please fund your wallet.`;
-                }
-            } else {
-                if (error.code === 311) {
-                    message = `SOLD OUT!`;
-                    setIsSoldOut(true);
-                } else if (error.code === 312) {
-                    message = `Minting period hasn't started yet.`;
-                }
-            }
-            toast.error(message);
-        } finally {
-            if (wallet?.publicKey) {
-                const balance = await props.connection.getBalance(wallet?.publicKey);
-                setBalance(balance / LAMPORTS_PER_SOL);
-            }
             setIsMinting(false);
         }
     };
@@ -802,18 +731,6 @@ const Home = (props: HomeProps) => {
                               <SolExplorerLink href={solanaExplorerLink} target="_blank">View on Solana
                                 Explorer</SolExplorerLink>}
                         </NFT>
-                    </DesContainer>
-                    <DesContainer>
-                        <Des elevation={0}>
-                            <LogoAligner><img src="icon.png" alt=""></img><GoldTitle>TITLE 1</GoldTitle></LogoAligner>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                incididunt.</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                incididunt.</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                incididunt.</p>
-                            <img src="sample.png" />
-                        </Des>
                     </DesContainer>
                 </MintContainer>
             </MainContainer>

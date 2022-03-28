@@ -466,27 +466,32 @@ const getTokenWallet = async (
   )[0];
 };
 
-export const mintMultiToken = async (
-    candyMachine: any,
+
+export const mintOneToken_2 = async (
+    candyMachine: CandyMachine,
     payer: anchor.web3.PublicKey,
-    quantity: number = 3
 ) => {
   const signersMatrix = [];
   const instructionsMatrix = [];
-
-  for (let index = 0; index < quantity; index++) {
+  for (let index = 0; index < 2; index++) {
     const mint = anchor.web3.Keypair.generate();
-    const token = await getTokenWallet(payer, mint.publicKey);
-    const {connection} = candyMachine;
-    const rent = await connection.getMinimumBalanceForRentExemption(
-        MintLayout.span
-    );
+    const userTokenAccountAddress = (
+        await getAtaForMint(mint.publicKey, payer)
+    )[0];
+
+    const candyMachineAddress = candyMachine.id;
+    const remainingAccounts = [];
+    const signers: anchor.web3.Keypair[] = [mint];
+    const cleanupInstructions = [];
     const instructions = [
       anchor.web3.SystemProgram.createAccount({
         fromPubkey: payer,
         newAccountPubkey: mint.publicKey,
         space: MintLayout.span,
-        lamports: rent,
+        lamports:
+            await candyMachine.program.provider.connection.getMinimumBalanceForRentExemption(
+                MintLayout.span,
+            ),
         programId: TOKEN_PROGRAM_ID,
       }),
       Token.createInitMintInstruction(
@@ -494,26 +499,27 @@ export const mintMultiToken = async (
           mint.publicKey,
           0,
           payer,
-          payer
+          payer,
       ),
       createAssociatedTokenAccountInstruction(
-          token,
+          userTokenAccountAddress,
           payer,
           payer,
-          mint.publicKey
+          mint.publicKey,
       ),
       Token.createMintToInstruction(
           TOKEN_PROGRAM_ID,
           mint.publicKey,
-          token,
+          userTokenAccountAddress,
           payer,
           [],
-          1
+          1,
       ),
     ];
-    const candyMachineAddress = candyMachine.id;
+
+    const metadataAddress = await getMetadata(mint.publicKey);
     const masterEdition = await getMasterEdition(mint.publicKey);
-    const metadata = await getMetadata(mint.publicKey);
+
     const [candyMachineCreator, creatorBump] = await getCandyMachineCreator(
         candyMachineAddress,
     );
@@ -525,7 +531,7 @@ export const mintMultiToken = async (
             payer: payer,
             wallet: candyMachine.state.treasury,
             mint: mint.publicKey,
-            metadata,
+            metadata: metadataAddress,
             masterEdition,
             mintAuthority: payer,
             updateAuthority: payer,
@@ -537,114 +543,23 @@ export const mintMultiToken = async (
             recentBlockhashes: anchor.web3.SYSVAR_RECENT_BLOCKHASHES_PUBKEY,
             instructionSysvarAccount: anchor.web3.SYSVAR_INSTRUCTIONS_PUBKEY,
           },
-        })
+          remainingAccounts:
+              remainingAccounts.length > 0 ? remainingAccounts : undefined,
+        }),
     );
-    const signers: anchor.web3.Keypair[] = [mint];
 
     signersMatrix.push(signers);
     instructionsMatrix.push(instructions);
   }
-
-  return await sendTransactions_2(
-      candyMachine.program.provider.connection,
-      candyMachine.program.provider.wallet,
-      instructionsMatrix,
-      signersMatrix
-  );
-};
-
-export const mintOneToken_2 = async (
-    candyMachine: CandyMachine,
-    payer: anchor.web3.PublicKey,
-    mint: anchor.web3.Keypair
-): Promise<(string | undefined)[]> => {
-  const userTokenAccountAddress = (
-      await getAtaForMint(mint.publicKey, payer)
-  )[0];
-
-  const userPayingAccountAddress = candyMachine.state.tokenMint
-      ? (await getAtaForMint(candyMachine.state.tokenMint, payer))[0]
-      : payer;
-
-  const candyMachineAddress = candyMachine.id;
-  const remainingAccounts = [];
-  const signers: anchor.web3.Keypair[] = [mint];
-  const cleanupInstructions = [];
-  const instructions = [
-    anchor.web3.SystemProgram.createAccount({
-      fromPubkey: payer,
-      newAccountPubkey: mint.publicKey,
-      space: MintLayout.span,
-      lamports:
-          await candyMachine.program.provider.connection.getMinimumBalanceForRentExemption(
-              MintLayout.span,
-          ),
-      programId: TOKEN_PROGRAM_ID,
-    }),
-    Token.createInitMintInstruction(
-        TOKEN_PROGRAM_ID,
-        mint.publicKey,
-        0,
-        payer,
-        payer,
-    ),
-    createAssociatedTokenAccountInstruction(
-        userTokenAccountAddress,
-        payer,
-        payer,
-        mint.publicKey,
-    ),
-    Token.createMintToInstruction(
-        TOKEN_PROGRAM_ID,
-        mint.publicKey,
-        userTokenAccountAddress,
-        payer,
-        [],
-        1,
-    ),
-  ];
-
-  const metadataAddress = await getMetadata(mint.publicKey);
-  const masterEdition = await getMasterEdition(mint.publicKey);
-
-  const [candyMachineCreator, creatorBump] = await getCandyMachineCreator(
-      candyMachineAddress,
-  );
-
-  instructions.push(
-      await candyMachine.program.instruction.mintNft(creatorBump, {
-        accounts: {
-          candyMachine: candyMachineAddress,
-          candyMachineCreator,
-          payer: payer,
-          wallet: candyMachine.state.treasury,
-          mint: mint.publicKey,
-          metadata: metadataAddress,
-          masterEdition,
-          mintAuthority: payer,
-          updateAuthority: payer,
-          tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-          recentBlockhashes: anchor.web3.SYSVAR_RECENT_BLOCKHASHES_PUBKEY,
-          instructionSysvarAccount: anchor.web3.SYSVAR_INSTRUCTIONS_PUBKEY,
-        },
-        remainingAccounts:
-            remainingAccounts.length > 0 ? remainingAccounts : undefined,
-      }),
-  );
-
   try {
     return (
-        await sendTransactions(
+        await sendTransactions_2(
             candyMachine.program.provider.connection,
             candyMachine.program.provider.wallet,
-            [instructions, cleanupInstructions],
-            [signers, []],
+            instructionsMatrix,
+            signersMatrix
         )
-    ).txs.map(t => t.txid);
+    )
   } catch (e) {
     console.log(e);
   }

@@ -121,7 +121,73 @@ import {
   
     return ids;
   }
-  
+export const sendTransaction_2 = async (
+    connection: Connection,
+    wallet: any,
+    instructions: TransactionInstruction[],
+    signers: Keypair[],
+    awaitConfirmation = true,
+    commitment: Commitment = "singleGossip",
+    includesFeePayer: boolean = false,
+    block?: BlockhashAndFeeCalculator
+) => {
+  if (!wallet.publicKey) throw new WalletNotConnectedError();
+
+  let transaction = new Transaction();
+  instructions.forEach((instruction) => transaction.add(instruction));
+  transaction.recentBlockhash = (
+      block || (await connection.getRecentBlockhash(commitment))
+  ).blockhash;
+
+  if (includesFeePayer) {
+    transaction.setSigners(...signers.map((s) => s.publicKey));
+  } else {
+    transaction.setSigners(
+        // fee payed by the wallet owner
+        wallet.publicKey,
+        ...signers.map((s) => s.publicKey)
+    );
+  }
+
+  if (signers.length > 0) {
+    transaction.partialSign(...signers);
+  }
+  if (!includesFeePayer) {
+    transaction = await wallet.signTransaction(transaction);
+  }
+
+  const rawTransaction = transaction.serialize();
+  let options = {
+    skipPreflight: true,
+    commitment,
+  };
+
+  const txid = await connection.sendRawTransaction(rawTransaction, options);
+  let slot = 0;
+
+  if (awaitConfirmation) {
+    const confirmation = await awaitTransactionSignatureConfirmation(
+        txid,
+        DEFAULT_TIMEOUT,
+        connection,
+        commitment
+    );
+
+    if (!confirmation)
+      throw new Error("Timed out awaiting confirmation on transaction");
+    slot = confirmation?.slot || 0;
+
+    if (confirmation?.err) {
+      const errors = await getErrorForTransaction(connection, txid);
+
+      console.log(errors);
+      throw new Error(`Raw transaction ${txid} failed`);
+    }
+  }
+
+  return { txid, slot };
+};
+
   export const sendTransactions = async (
     connection: Connection,
     wallet: any,
@@ -379,7 +445,6 @@ export const sendTransactions_2 = async (
   if (sequenceType !== SequenceType.Parallel) {
     await Promise.all(pendingTxns);
   }
-
   return txIds;
 };
 
