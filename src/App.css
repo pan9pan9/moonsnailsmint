@@ -1,17 +1,38 @@
 /* Customize your main colors in :root variables */
 /*--card-background-color: #946cee; */
+@font-face {
+  font-family: "GowunBatang";
+  src: url("./fonts/GowunBatang-Bold.ttf");
+}
+
+@font-face{
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Light.ttf");
+}
 
 :root {
-  --main-background-color: #946cee;
-  --card-background-lighter-color: #946cee;
+  --main-background-color: #584486;
+  --card-background-lighter-color: #7A7F92;
   --main-text-color:#F7F6F4;
   --title-text-color:#F7F6F4;
 }
 
 body{
-  background-color:var(--main-background-color);
-  font-family:  'Roboto Serif', sans-serif, 'Patrick Hand', cursive;
+  background-color: #584486;
+  background-size: 100% 100%;
+  font-family:'Poppins';
   font-size: 1.2em;
+  -webkit-user-select:none; 
+  -moz-user-select:none; 
+  -ms-user-select:none; 
+  user-select:none
+}
+
+.big_wrap{
+  width: 100vw;
+  height: 100vh;
+  background-image: url(C:\Users\dmsrh\Desktop\candymachineee\candy-machine-v2-responsive-ui\src\wall45.png);
+  background-size: cover;
 }
 
 h2, p{
@@ -22,5 +43,161 @@ h3{
 font-weight: normal;
 }
 
+.btnBox{
+  position: relative;
+  margin: 10px;
+}
+
+.btnStyle{
+  margin: 10px;
+  width : 40px;
+  height: 40px;
+  font-size: 25px;
+  transition: all 0.3s ease;
+}
+  
+.SoloveMint{
+  width: 700px;
+  font-size: 35px;
+  color: mintcream;
+  font-family:  'Arvo', serif, 'Patrick Hand', cursive;
+  font-weight: bold;
+  text-shadow: 2px 2px 2px gray;
+  margin-top: 50px;
+  margin-left: 20px;
+  flex: 1 1 400px;
+}
 
 
+
+#header{
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+
+.navbar_icons a {
+  color: white;
+}
+
+.navbar {
+  height: 45px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgb(83, 55, 150);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+  padding: 8px 12px;
+  z-index: 4;
+}
+
+.navbar_logo {
+  margin-left: 60px;
+}
+
+.navbar_icons {
+  list-style: none;
+  display: flex; 
+}
+
+.navbar_icons li {
+  padding: 13px 13px;
+}
+
+.navbar_icons li:hover {
+  border-radius: 4px;
+  background-color:#e1b5ff21;
+}
+
+.SoloveMintinfo{
+  font-size: 32px;
+}
+
+.btn_info{
+  padding-top: 10px;
+  position: relative; 
+}
+
+.SoloveMintinfo2{
+  width: 100%;
+  display: flex;
+  flex-flow: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.imgcontainer{
+  margin-top: 125px;
+  margin-right: 40px;
+}
+
+.image{
+  margin: 5px;
+}
+
+.mintinfo1{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  -webkit-box-align: stretch;
+  align-items: stretch;
+  padding-right: 40px;
+}
+
+.SoloveMintinfo1{
+  display: flex;
+  -webkit-box-pack: justify;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  
+}
+.bar{
+  height: 0.5px;
+  width: 100%;
+  background-color: white;
+  margin-bottom: 15px;
+}
+
+.label{
+  font-size: 20px; 
+}
+
+.unit{
+    font-size: 26px;
+    font-weight: bold;
+    margin-left: 5px;
+    line-height: 50px;
+}
+.num{
+  position: relative;
+  bottom: 15px;
+  font-size: 60px;
+}
+.select{
+  border-color: rgb(255, 255, 255);
+    background: white;
+    border-radius: 6px;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-align-last: center;
+    font-size: 16px;
+    color: black;
+    padding-right: 14px;
+    padding-left: 14px;
+    appearance: none;
+}
+
+.SoloveMintinfo1 .unit{
+  margin-right: 180px;
+}
+
+.SoloveMintinfo2 .num{
+  margin-left: 220px;
+}

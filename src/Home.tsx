@@ -19,6 +19,7 @@ import {
     mintOneToken_2,
     CANDY_MACHINE_PROGRAM,
 } from "./candy-machine";
+import {FaTwitter,FaDiscord,FaInstagram,FaTelegram,FaShoppingCart,FaHome} from "react-icons/fa";
 
 
 const cluster = process.env.REACT_APP_SOLANA_NETWORK!.toString();
@@ -67,19 +68,30 @@ const ConnectButton = styled(WalletMultiButton)`// connect button 뒤 네모
   border-radius: 18px !important;
   background-color: #946cee;
   margin: 0 auto;
+  height: 40px;
 `;
 
 const ConnectButton2 = styled(WalletMultiButton)`// 지갑 연결햇을때 배경
   border-radius: 18px !important;
-  background-color: #800080;
   margin: 0 auto;
+  height: 35px;
 `;
 
-const NFT = styled(Paper)`// MAIN뒤에 네모 
-  min-width: 400px;
+const ConnectButton3 = styled(WalletMultiButton)`// Container안 Buton connect button 뒤 네모
+    position: relative;
+    border-radius: 18px !important;
+    background-color: #946cee;  
+    width: 60%;
+    font-size: 20px;
+    top: 40px;
+    left:20%;
+`;
+
+const NFT = styled.div`// MAIN뒤에 네모 
+  min-width: 420px;
   padding: 5px 20px 20px 20px;
   flex: 1 1 auto;
-  background-color: var(--main-background-color) !important;
+  color: white;
 `;
 
 const Des = styled(NFT)`
@@ -91,6 +103,7 @@ const Card = styled(Paper)`
   display: inline-block;
   background-color: var(--card-background-lighter-color) !important;
   margin: 5px;
+  opacity: 0.5;
   padding: 24px;
 `;
 
@@ -120,13 +133,16 @@ const MintButtonContainer = styled.div`
 `;
 
 const Logo = styled.div`
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: flex-start;
-  img {
-    width: 90%;
-    height: 40px;
-  }
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    img {
+    margin-top:50px;
+    min-width:30vw;
+    }
+    background: radial-gradient(circle closest-side at 50% 35%,
+    grey 7%, transparent)
+    ;
 `;
 
 const Menu = styled.ul`
@@ -178,31 +194,26 @@ const SolExplorerLink = styled.a`
   }
 `;
 
-const MainContainer = styled.div` // 제일 뒷배경
-  display: flex;
-  flex-direction: column;
-  background-color: #946cee;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-right: 4%;
-  margin-left: 4%;
-  text-align: center;
-  justify-content: center;
-`;
 
-const MintContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  gap: 20px;
+const MainContainer = styled.div` // 제일 뒷배경
+    position: relative;
+    display: flex;
+    flex-flow: no wrap;
+    text-align: center;
+    justify-content: center;
+    align-itmes: center;
+    z-index: 1;
+    padding:20px;
+    bottom: 80px;
 `;
 
 const DesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    margin-top: 60px;
+    align-items: center;
+    width: 500px
 `;
 
 const Price = styled(Chip)`
@@ -251,6 +262,7 @@ const ShimmerTitle = styled.h1`
     }
   }
 `;
+
 
 const GoldTitle = styled.h2`
   color: var(--title-text-color);
@@ -589,39 +601,94 @@ const Home = (props: HomeProps) => {
         props.candyMachineId,
         props.connection,
     ]);
+    
+    const Counter = () => {
+        const selectList = ['1', '2', '3', '4', '5'];
+        const [Selected, setSelected] = useState('1');
+        const handleSelect = (e:any) => {
+        setSelected(e.target.value);
+      };
+          return (
+          <div className = "btn_info">
+            <div className="SoloveMintinfo1"> 
+              <span className="num"> 0.5 </span> 
+              <span className="unit"> Sol </span>
+              <span>
+                <select className="select" onChange={handleSelect} value={Selected}> 
+                  {selectList.map((item) => (
+                  <option value={item} key={item}> {item}</option>))}
+                  </select>
+              </span>
+            </div>
+            <div className="bar"></div>
+            <div className="SoloveMintinfo2">
+              <span className="label">TOTAL : </span> 
+              <span className="num"> {+Selected*0.5}</span>
+              <span className="unit">Sol</span>
+            </div>
+          </div>
+        );
+      };
 
     return (
         <main>
+            <div className="big_wrap" >
+            <div id="header">
+              <nav className="navbar">
+                <div className="navbar_logo">
+                  <a href=" 홈페이지 주소  "> <img src="logo1.svg" alt="Logo" style={{height:'35px'}}/> </a>
+                </div>
+              <ul className="navbar_icons">
+                <li><a href="" target="_blank"><FaHome/></a></li>
+                <li><a href="" target="_blank"><FaTwitter/></a></li>
+                <li><a href="" target="_blank"><FaTelegram/></a></li>
+                <li><a href="" target="_blank"><FaInstagram/></a></li>
+                <li><a href="" target="_blank"><FaDiscord/></a></li>
+                <li><a href="" target="_blank"><FaShoppingCart/></a></li>
+            </ul>
+
+              
+            <div>
+            <Wallet>
+                {wallet ?
+                  <WalletAmount>{(balance || 0).toLocaleString()} sol<ConnectButton2/></WalletAmount> :
+                  <ConnectButton>Connect wallet</ConnectButton>}
+              </Wallet>
+            </div>
+              </nav>
+            </div>
+
+                
             <MainContainer>
-                <WalletContainer>
-                    <Logo><a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer"><img alt=""
-                                                                                                          src="Solove_icon.png"/></a></Logo>
-
-                    <Wallet>
-                        {wallet ?
-                            <WalletAmount>{(balance || 0).toLocaleString()} SOL<ConnectButton2/></WalletAmount> :
-                            <ConnectButton><img src="button.png"/> </ConnectButton>}
-                    </Wallet>
-                </WalletContainer>
-                <br/>
-
-
-                <MintContainer>
-                    <DesContainer>
-                        <NFT elevation={0}>
-                            <GoldTitle>Solover</GoldTitle>
-                            <div><Price
-                                label={isActive && whitelistEnabled && (whitelistTokenBalance > 0) ? (whitelistPrice + " " + priceLabel) : (1 + " " + priceLabel)}/><Image
-                                src="Solove.jpg"
-                                alt="NFT To Mint"/></div>
+                    <div className="imgcontainer">
+                        <table className="imgtable"> 
+                          <tr>
+                            <td height='0'>
+                              <div><Image className="image" src="Solove.jpg" alt="NFT To Mint" style={{height:'250px'}}/></div>
+                            </td>
+                            <td height="0">
+                              <div><Image className="image" src="Solove.jpg" alt="NFT To Mint" style={{height:'250px'}}/></div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td height="0">
+                              <div><Image className="image" src="Solove.jpg" alt="NFT To Mint" style={{height:'250px'}}/></div>
+                            </td>
+                            <td height="0">
+                              <div><Image className="image" src="Solove.jpg" alt="NFT To Mint" style={{height:'250px'}}/></div>
+                            </td>
+                          </tr>
+                        </table>
+                    </div>
                             {wallet && isActive && whitelistEnabled && (whitelistTokenBalance > 0) &&
                               <h3>You have {whitelistTokenBalance} whitelist mint(s) remaining.</h3>}
-                            {wallet && isActive &&
-                                /* <p>Total Minted : {100 - (itemsRemaining * 100 / itemsAvailable)}%</p>}*/
-                              <h3>TOTAL MINTED : {itemsRedeemed} / {itemsAvailable}</h3>}
 
-                            <br/>
-                            
+                    <DesContainer>
+                      <div className="logobox">
+                       <Logo><a href="http://localhost:3000/"  rel="noopener noreferrer"><img alt="" src="logo-16.svg"/></a></Logo>                                                                                 
+                      </div>
+                        <NFT>
+                            <Counter/>
                             <MintButtonContainer>
                                 {!isActive && candyMachine?.state.goLiveDate ? (
                                     <Countdown
@@ -633,7 +700,7 @@ const Home = (props: HomeProps) => {
                                         renderer={renderCounter}
                                     />) : (
                                     !wallet ? (
-                                            <ConnectButton><img src="button.png"/></ConnectButton>
+                                            <ConnectButton3>Connect Wallet</ConnectButton3>
                                         ) :
                                         candyMachine?.state.gatekeeper &&
                                         wallet.publicKey &&
@@ -674,66 +741,16 @@ const Home = (props: HomeProps) => {
 
                                         ))}
                             </MintButtonContainer>
-                            <MintButtonContainer>
-                                {!isActive && candyMachine?.state.goLiveDate ? (
-                                    <Countdown
-                                        date={toDate(candyMachine?.state.goLiveDate)}
-                                        onMount={({completed}) => completed && setIsActive(true)}
-                                        onComplete={() => {
-                                            setIsActive(true);
-                                        }}
-                                        renderer={renderCounter}
-                                    />) : (
-                                    !wallet ? (
-                                            <ConnectButton><img src="Solove_icon.png"/></ConnectButton>
-                                        ) :
-                                        candyMachine?.state.gatekeeper &&
-                                        wallet.publicKey &&
-                                        wallet.signTransaction ? (
-                                            <GatewayProvider
-                                                wallet={{
-                                                    publicKey:
-                                                        wallet.publicKey ||
-                                                        new PublicKey(CANDY_MACHINE_PROGRAM),
-                                                    //@ts-ignore
-                                                    signTransaction: wallet.signTransaction,
-                                                }}
-                                                // // Replace with following when added
-                                                // gatekeeperNetwork={candyMachine.state.gatekeeper_network}
-                                                gatekeeperNetwork={
-                                                    candyMachine?.state?.gatekeeper?.gatekeeperNetwork
-                                                } // This is the ignite (captcha) network
-                                                /// Don't need this for mainnet
-                                                clusterUrl={rpcUrl}
-                                                options={{autoShowModal: false}}
-                                            >
-                                                <MintButton
-                                                    candyMachine={candyMachine}
-                                                    isMinting={isMinting}
-                                                    isActive={isActive}
-                                                    isSoldOut={isSoldOut}
-                                                    onMint={onMint_1}
-                                                />
-                                            </GatewayProvider>
-                                        ) : (
-                                            <MintButton
-                                                candyMachine={candyMachine}
-                                                isMinting={isMinting}
-                                                isActive={isActive}
-                                                isSoldOut={isSoldOut}
-                                                onMint={onMint_1}
-                                            />
-
-                                        ))}
-                            </MintButtonContainer>
-                            <br/>
+                            {wallet && isActive &&
+                                /* <p>Total Minted : {100 - (itemsRemaining * 100 / itemsAvailable)}%</p>}*/
+                              <h3 className="total_minted">TOTAL MINTED : {itemsRedeemed} / {itemsAvailable}</h3>}
+                       
                             {wallet && isActive && solanaExplorerLink &&
                               <SolExplorerLink href={solanaExplorerLink} target="_blank">View on Solana
                                 Explorer</SolExplorerLink>}
                         </NFT>
                     </DesContainer>
-                </MintContainer>
-            </MainContainer>
+                    </MainContainer>
             <Snackbar
                 open={alertState.open}
                 autoHideDuration={6000}
@@ -746,6 +763,7 @@ const Home = (props: HomeProps) => {
                     {alertState.message}
                 </Alert>
             </Snackbar>
+            </div>
         </main>
     );
 };

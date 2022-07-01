@@ -14,7 +14,7 @@ const Image = styled.img`
 export const CTAButton = styled(Button)`
   display: block !important;
   margin: 0 auto !important;
-  background-color: #946cee !important;
+  background-color: white !important;
   min-width: 120px !important;
   font-size: 1em !important;
 `;
