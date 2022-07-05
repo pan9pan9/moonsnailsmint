@@ -726,7 +726,6 @@ const Home = (props: HomeProps) => {
             <Header></Header>
             <MainContainer>
                 <TextContainer>
-                    
                         <div>
                         <Text>
                             <h1>WEEABOO NFTs</h1>
