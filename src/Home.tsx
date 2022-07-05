@@ -601,7 +601,34 @@ const Home = (props: HomeProps) => {
         props.candyMachineId,
         props.connection,
     ]);
-    
+    const Header = () => {
+      return(
+      <div id="header">
+        <nav className="navbar">
+          <div className="navbar_logo">
+            <a href=" 홈페이지 주소  "> <img src="logo1.svg" alt="Logo" style={{height:'35px'}}/> </a>
+          </div>
+        <ul className="navbar_icons">
+          <li><a href="" target="_blank"><FaHome/></a></li>
+          <li><a href="" target="_blank"><FaTwitter/></a></li>
+          <li><a href="" target="_blank"><FaTelegram/></a></li>
+          <li><a href="" target="_blank"><FaInstagram/></a></li>
+          <li><a href="" target="_blank"><FaDiscord/></a></li>
+          <li><a href="" target="_blank"><FaShoppingCart/></a></li>
+        </ul>
+      <div>
+        
+    <Wallet>
+        {wallet ?
+          <WalletAmount>{(balance || 0).toLocaleString()} sol<ConnectButton2/></WalletAmount> :
+          <ConnectButton>Connect wallet</ConnectButton>}
+      </Wallet>
+    </div>
+      </nav>
+    </div>)
+      
+    }
+
     const Counter = () => {
         const selectList = ['1', '2', '3', '4', '5'];
         const [Selected, setSelected] = useState('1');
@@ -633,32 +660,8 @@ const Home = (props: HomeProps) => {
     return (
         <main>
             <div className="big_wrap" >
-            <div id="header">
-              <nav className="navbar">
-                <div className="navbar_logo">
-                  <a href=" 홈페이지 주소  "> <img src="logo1.svg" alt="Logo" style={{height:'35px'}}/> </a>
-                </div>
-              <ul className="navbar_icons">
-                <li><a href="" target="_blank"><FaHome/></a></li>
-                <li><a href="" target="_blank"><FaTwitter/></a></li>
-                <li><a href="" target="_blank"><FaTelegram/></a></li>
-                <li><a href="" target="_blank"><FaInstagram/></a></li>
-                <li><a href="" target="_blank"><FaDiscord/></a></li>
-                <li><a href="" target="_blank"><FaShoppingCart/></a></li>
-            </ul>
-
-              
-            <div>
-            <Wallet>
-                {wallet ?
-                  <WalletAmount>{(balance || 0).toLocaleString()} sol<ConnectButton2/></WalletAmount> :
-                  <ConnectButton>Connect wallet</ConnectButton>}
-              </Wallet>
-            </div>
-              </nav>
-            </div>
-
-                
+            <Header></Header>
+     
             <MainContainer>
                     <div className="imgcontainer">
                         <table className="imgtable"> 
