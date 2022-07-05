@@ -78,12 +78,50 @@ const ConnectButton2 = styled(WalletMultiButton)`// 지갑 연결햇을때 배�
 `;
 
 const ConnectButton3 = styled(WalletMultiButton)`// Container안 Buton connect button 뒤 네모
+    opacity: 0;
+    animation: fadeIn1 1s ease-out;
+    animation-delay: 1.3s;
+    animation-fill-mode: forwards;
     position: relative;
     border-radius: 18px !important;
-    background-color: black;  
+    background-color: black;
+    position: relative;
+    overflow: hidden;
+    color: rgba(0,0,0,0);
     width: 45%;
     font-size: 20px;
     top: 40px;
+    &::after{
+        content: "Mint Now!";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        transition: all 0.5s;
+      }
+      &::before{
+        content: "Connect Wallet";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: -100%;
+        width: 100%;
+        height: 100%;
+        color: white;
+        opacity: 0;
+        transition: all 0.5s;
+      }
+    &:hover::after{
+        opacity: 0;
+        transform: translateY(100%);
+      }
+      &:hover::before{
+        opacity: 1;
+        transform: translateY(100%);
+      }
     
 `;
 
@@ -199,6 +237,43 @@ const MainContainer = styled.div`
     margin: 30px 100px;
 `;
 
+const Text = styled.div`
+@keyframes fadeIn1 {
+    0% {
+     opacity: 0;
+     transform: translateX(-100px);  
+    }
+    
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+    animation: fadeIn1 1s ease-out;
+    animation-delay: .9s;
+    animation-fill-mode: forwards;
+
+opacity: 0;
+`;
+
+const Text1 = styled.div`
+@keyframes fadeIn1 {
+    0% {
+     opacity: 0;
+     transform: translateX(-100px);  
+    }
+    
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+    animation: fadeIn1 1s ease-out;
+    animation-delay: 1.1s;
+    animation-fill-mode: forwards;
+
+opacity: 0;
+`;
 
 const TextContainer = styled.div`
     width: 600px;
@@ -214,6 +289,20 @@ const TextContainer = styled.div`
 `;
 
 const DesContainer = styled.div`
+@keyframes fadeIn {
+    0% {
+     opacity: 0;
+     transform: translateX(100px);  
+    }
+    
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+    animation: fadeIn 1s ease-out;
+    animation-delay: .1s;
+    animation-fill-mode: forwards;
     display: flex;
     flex-direction: column;
     margin: 20px;
@@ -637,12 +726,20 @@ const Home = (props: HomeProps) => {
             <Header></Header>
             <MainContainer>
                 <TextContainer>
-                    <div>
-                        <h1>WEEABOO NFTs</h1>
-                        <h3>Weeaboo nft's vision is to build an inclusive web3 through its collection and community. 
-                        According to research published in July. 2022. We can create opportunities for anyone around the world
-                        to be owners, creators and contributors in this new era of the web.</h3>
-                    </div>   
+                    
+                        <div>
+                        <Text>
+                            <h1>WEEABOO NFTs</h1>
+                        </Text>
+                        <Text1>
+                            <h3>Weeaboo nft's vision is to build an inclusive web3 through its collection and community. 
+                                According to research published in July. 2022. We can create opportunities for anyone around the world
+                                to be owners, creators and contributors in this new era of the web.</h3>
+                        </Text1>
+                            
+                        </div>   
+
+                    
                     <MintButtonContainer>
                         {!isActive && candyMachine?.state.goLiveDate ? (
                             <Countdown
@@ -654,7 +751,7 @@ const Home = (props: HomeProps) => {
                                 renderer={renderCounter}
                             />) : (
                             !wallet ? (
-                                    <ConnectButton3>Mint now!</ConnectButton3>
+                                    <ConnectButton3></ConnectButton3>
                                 ) :
                                 candyMachine?.state.gatekeeper &&
                                 wallet.publicKey &&
