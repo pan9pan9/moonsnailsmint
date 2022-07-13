@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import styled from "styled-components";
 import confetti from "canvas-confetti";
 import * as anchor from "@project-serum/anchor";
@@ -19,8 +19,8 @@ import {
     mintOneToken_2,
     CANDY_MACHINE_PROGRAM,
 } from "./candy-machine";
-import {FaTwitter,FaDiscord,FaInstagram,FaTelegram,FaShoppingCart,FaHome} from "react-icons/fa";
-
+import {FaTwitter,FaDiscord,FaShoppingCart} from "react-icons/fa";
+import Slider from './Slider';
 
 const cluster = process.env.REACT_APP_SOLANA_NETWORK!.toString();
 const decimals = process.env.REACT_APP_SPL_TOKEN_TO_MINT_DECIMALS ? +process.env.REACT_APP_SPL_TOKEN_TO_MINT_DECIMALS!.toString() : 9;
@@ -33,7 +33,7 @@ const WalletContainer = styled.div`
 `;
 
 const WalletAmount = styled.div`
-  color: black;
+  color: white;
   width: auto;
   padding: 5px 5px 5px 16px;
   min-width: 48px;
@@ -77,7 +77,7 @@ const ConnectButton2 = styled(WalletMultiButton)`// 지갑 연결햇을때 배�
   height:35px;
 `;
 
-const ConnectButton3 = styled(WalletMultiButton)`// Container안 Buton connect button 뒤 네모
+const ConnectButton3 = styled(WalletMultiButton)`
     opacity: 0;
     animation: fadeIn1 1s ease-out;
     animation-delay: 1.3s;
@@ -87,10 +87,16 @@ const ConnectButton3 = styled(WalletMultiButton)`// Container안 Buton connect b
     background-color: black;
     position: relative;
     overflow: hidden;
-    color: rgba(0,0,0,0);
+    color: white;
     width: 45%;
     font-size: 20px;
     top: 40px;
+`;
+
+const Text2 = styled.div`
+    width:100%;
+    height:100%;
+    position:relative;
     &::after{
         content: "Mint Now!";
         display: block;
@@ -101,8 +107,8 @@ const ConnectButton3 = styled(WalletMultiButton)`// Container안 Buton connect b
         height: 100%;
         color: white;
         transition: all 0.5s;
-      }
-      &::before{
+    }
+    &::before{
         content: "Connect Wallet";
         display: block;
         position: absolute;
@@ -113,28 +119,22 @@ const ConnectButton3 = styled(WalletMultiButton)`// Container안 Buton connect b
         color: white;
         opacity: 0;
         transition: all 0.5s;
-      }
+    }
     &:hover::after{
         opacity: 0;
         transform: translateY(100%);
-      }
-      &:hover::before{
+    }
+    &:hover::before{
         opacity: 1;
         transform: translateY(100%);
-      }
-    
-`;
+    }
+`
 
 const NFT = styled.div`// MAIN뒤에 네모 
   min-width: 420px;
   padding: 5px 20px 20px 20px;
   flex: 1 1 auto;
   color: white;
-`;
-
-const Des = styled(NFT)`
-  text-align: left;
-  padding-top: 0px;
 `;
 
 const Card = styled(Paper)`
@@ -154,66 +154,21 @@ const MintButtonContainer = styled.div`
   button.MuiButton-contained:not(.MuiButton-containedPrimary):focus {
     -webkit-animation: pulse 1s;
     animation: pulse 1s;
-    box-shadow: 0 0 0 2em rgba(255, 255, 255, 0);
+    box-shadow: 0 0 0 0.5em rgba(255, 255, 255, 0);
   }
 
   @-webkit-keyframes pulse {
     0% {
-      box-shadow: 0 0 0 0 #ef8f6e;
+      box-shadow: 0 0 0 0 skyblue;
     }
   }
 
   @keyframes pulse {
     0% {
-      box-shadow: 0 0 0 0 #ef8f6e;
+      box-shadow: 0 0 0 0 skyblue;
     }
   }
-`;
 
-const Logo = styled.div`
-    flex: 0 0 auto;
-    display: flex;
-    justify-content: center;
-    img {
-    margin-top:50px;
-    min-width:30vw;
-    }
-    background: radial-gradient(circle closest-side at 50% 35%,
-    grey 7%, transparent)
-    ;
-`;
-
-const Menu = styled.ul`
-  list-style: none;
-  display: inline-flex;
-  flex: 1 0 auto;
-
-  li {
-    margin: 0 12px;
-
-    a {
-      color: var(--main-text-color);
-      list-style-image: none;
-      list-style-position: outside;
-      list-style-type: none;
-      outline: none;
-      text-decoration: none;
-      text-size-adjust: 100%;
-      touch-action: manipulation;
-      transition: color 0.3s;
-      padding-bottom: 15px;
-
-      img {
-        max-height: 26px;
-      }
-    }
-
-    a:hover, a:active {
-      color: rgb(131, 146, 161);
-      border-bottom: 4px solid var(--title-text-color);
-    }
-
-  }
 `;
 
 const SolExplorerLink = styled.a`
@@ -271,9 +226,8 @@ const Text1 = styled.div`
     animation: fadeIn1 1s ease-out;
     animation-delay: 1.1s;
     animation-fill-mode: forwards;
-
-opacity: 0;
-`;
+    opacity: 0;
+    `;
 
 const TextContainer = styled.div`
     width: 600px;
@@ -286,7 +240,7 @@ const TextContainer = styled.div`
     text-align: left;
     z-index: 1;
     padding:20px;
-`;
+    `;
 
 const DesContainer = styled.div`
 @keyframes fadeIn {
@@ -310,6 +264,25 @@ const DesContainer = styled.div`
     width: 700px
 `;
 
+const ImageCSSContainer = styled.div`
+  :before{
+    position:absolute;
+    color: rgb(170,170,170,0.5);
+    bottom:-50px;
+    left: 30px;
+    font-size:74px;
+    content:'ㄴ';
+    
+  }
+  :after{
+    position:absolute;
+    color: rgb(170,170,170,0.5);
+    top:-55px;
+    right: 28px;
+    font-size:74px;
+    content: 'ㄱ';
+  }
+`;
 
 const Price = styled(Chip)`
   position: absolute;
@@ -319,8 +292,8 @@ const Price = styled(Chip)`
 `;
 
 const Image = styled.img`
-  height: 400px;
-  width: auto;
+  height: 550px;
+  width: 550px;
   border-radius: 7px;
   box-shadow: 5px 5px 40px 5px rgba(0,0,0,0.5);
 `;
@@ -374,6 +347,27 @@ const LogoAligner = styled.div`
   }
 `;
 
+const ProgressBar = styled.div`
+    width: 100%;
+    height: 30px;
+    background-color: #dedede;
+    font-weight: 600;
+    font-size: .8rem;
+    margin-top: 20px;
+`;
+interface ITest{
+    width: number,
+} 
+
+const Progress = styled.div`
+    width: ${(props:ITest) => props.width}%; 
+    height: 30px;
+    padding: 0;
+    text-align: center;
+    background-color: skyblue;
+    color: #111;
+    `
+
 export interface HomeProps {
     candyMachineId: anchor.web3.PublicKey;
     connection: anchor.web3.Connection;
@@ -407,7 +401,7 @@ const Home = (props: HomeProps) => {
     const [candyMachine, setCandyMachine] = useState<CandyMachine>();
 
     const rpcUrl = props.rpcHost;
-
+    
     const refreshCandyMachineState = () => {
         (async () => {
             if (!wallet) return;
@@ -726,20 +720,15 @@ const Home = (props: HomeProps) => {
             <Header></Header>
             <MainContainer>
                 <TextContainer>
-                        <div>
                         <Text>
-                            <h1>WEEABOO NFTs</h1>
+                            <h1>WEEABOO NFT</h1>
                         </Text>
                         <Text1>
                             <h3>Weeaboo nft's vision is to build an inclusive web3 through its collection and community. 
                                 According to research published in July. 2022. We can create opportunities for anyone around the world
                                 to be owners, creators and contributors in this new era of the web.</h3>
                         </Text1>
-                            
-                        </div>   
-
                     
-                    <MintButtonContainer>
                         {!isActive && candyMachine?.state.goLiveDate ? (
                             <Countdown
                                 date={toDate(candyMachine?.state.goLiveDate)}
@@ -750,7 +739,7 @@ const Home = (props: HomeProps) => {
                                 renderer={renderCounter}
                             />) : (
                             !wallet ? (
-                                    <ConnectButton3></ConnectButton3>
+                                    <ConnectButton3><Text2></Text2></ConnectButton3>
                                 ) :
                                 candyMachine?.state.gatekeeper &&
                                 wallet.publicKey &&
@@ -781,6 +770,7 @@ const Home = (props: HomeProps) => {
                                         />
                                     </GatewayProvider>
                                 ) : (
+                                    <MintButtonContainer>
                                     <MintButton
                                         candyMachine={candyMachine}
                                         isMinting={isMinting}
@@ -788,19 +778,28 @@ const Home = (props: HomeProps) => {
                                         isSoldOut={isSoldOut}
                                         onMint={onMint}
                                     />
+                                    </MintButtonContainer>
 
                                 ))}
-                    </MintButtonContainer>
                     {wallet && isActive &&
                         /* <p>Total Minted : {100 - (itemsRemaining * 100 / itemsAvailable)}%</p>}*/
-                        <h3 className="total_minted">TOTAL MINTED : {itemsRedeemed} / {itemsAvailable}</h3>}
-                
-                    {wallet && isActive && solanaExplorerLink &&
+                        <div>
+                            {/* <h3>Total Minted : {itemsAvailable}</h3> */}
+                            <ProgressBar>
+                                <Progress width = {100-(itemsRemaining*100/itemsAvailable)}/>
+                            </ProgressBar>
+                                
+                            <h3>Minting Progress : {100-(itemsRemaining*100/itemsAvailable)}%</h3>
+                        </div>}
+                    {/* {wallet && isActive && solanaExplorerLink &&
                         <SolExplorerLink href={solanaExplorerLink} target="_blank">View on Solana
-                        Explorer</SolExplorerLink>}
+                        Explorer</SolExplorerLink>} */}
                 </TextContainer>
                 <DesContainer>
-                    <img src="solove.jpg" style={{height:'500px', width:'700px'}}></img>
+                  <ImageCSSContainer>
+                    {/* <Image src="weeaboo2.jpg" style={{height:'550px', width:'550px'}}></Image> */}
+                    <Slider/>
+                  </ImageCSSContainer>
                 </DesContainer>
             </MainContainer>
             <Snackbar

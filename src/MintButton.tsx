@@ -13,9 +13,9 @@ const Image = styled.img`
 
 export const CTAButton = styled(Button)`
   display: block !important;
-  margin: 0 auto !important;
+  margin: 0 !important;
   background-color: white !important;
-  min-width: 120px !important;
+  min-width: 250px !important;
   font-size: 1em !important;
 `;
 
@@ -71,13 +71,14 @@ export const MintButton = ({
             {!candyMachine ? (
                 <Image src="connect.gif"/> // 지갑 connect후 버튼들
             ) : candyMachine?.state.isSoldOut || isSoldOut ? (
-                <Image src = "soldout.jpg" />
+                "Sold Out!"
+                // "Thanks for your interest. Sold out!"
             ) : isActive ? (
                 isVerifying ? 'VERIFYING...' :
                     isMinting ? (
                         <CircularProgress/>
                     ) : (
-                        "MINT"
+                        "MINT NOW"
                     )
             ) : (candyMachine?.state.goLiveDate ? (
                 "SOON"
