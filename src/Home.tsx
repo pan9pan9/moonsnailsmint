@@ -6,7 +6,7 @@ import {LAMPORTS_PER_SOL, PublicKey} from "@solana/web3.js";
 import {useAnchorWallet} from "@solana/wallet-adapter-react";
 import {WalletMultiButton} from "@solana/wallet-adapter-react-ui";
 import {GatewayProvider} from '@civic/solana-gateway-react';
-import Countdown from "react-countdown";
+import Countdown from 'react-countdown/dist';
 import {Snackbar, Paper, LinearProgress, Chip} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import {toDate, AlertState, getAtaForMint} from './utils';
@@ -268,7 +268,7 @@ const ImageCSSContainer = styled.div`
   :before{
     position:absolute;
     color: rgb(170,170,170,0.5);
-    bottom:-50px;
+    bottom:-55px;
     left: 30px;
     font-size:74px;
     content:'ㄴ';
@@ -282,6 +282,7 @@ const ImageCSSContainer = styled.div`
     font-size:74px;
     content: 'ㄱ';
   }
+  
 `;
 
 const Price = styled(Chip)`
@@ -289,13 +290,6 @@ const Price = styled(Chip)`
   margin: 5px;
   font-weight: bold;
   font-size: 1em !important;
-`;
-
-const Image = styled.img`
-  height: 550px;
-  width: 550px;
-  border-radius: 7px;
-  box-shadow: 5px 5px 40px 5px rgba(0,0,0,0.5);
 `;
 
 const BorderLinearProgress = styled(LinearProgress)`
@@ -729,6 +723,17 @@ const Home = (props: HomeProps) => {
                                 to be owners, creators and contributors in this new era of the web.</h3>
                         </Text1>
                     
+                        {wallet && isActive &&
+                        /* <p>Total Minted : {100 - (itemsRemaining * 100 / itemsAvailable)}%</p>}*/
+                        <div>
+                            {/* <h3>Total Minted : {itemsAvailable}</h3> */}
+                            <ProgressBar>
+                                <Progress width = {100-(itemsRemaining*100/itemsAvailable)}/>
+                            </ProgressBar>
+                                
+                            <h3>Minting Progress : {100-(itemsRemaining*100/itemsAvailable)}%</h3>
+                        </div>}
+                        
                         {!isActive && candyMachine?.state.goLiveDate ? (
                             <Countdown
                                 date={toDate(candyMachine?.state.goLiveDate)}
@@ -781,23 +786,10 @@ const Home = (props: HomeProps) => {
                                     </MintButtonContainer>
 
                                 ))}
-                    {wallet && isActive &&
-                        /* <p>Total Minted : {100 - (itemsRemaining * 100 / itemsAvailable)}%</p>}*/
-                        <div>
-                            {/* <h3>Total Minted : {itemsAvailable}</h3> */}
-                            <ProgressBar>
-                                <Progress width = {100-(itemsRemaining*100/itemsAvailable)}/>
-                            </ProgressBar>
-                                
-                            <h3>Minting Progress : {100-(itemsRemaining*100/itemsAvailable)}%</h3>
-                        </div>}
-                    {/* {wallet && isActive && solanaExplorerLink &&
-                        <SolExplorerLink href={solanaExplorerLink} target="_blank">View on Solana
-                        Explorer</SolExplorerLink>} */}
+                   
                 </TextContainer>
                 <DesContainer>
                   <ImageCSSContainer>
-                    {/* <Image src="weeaboo2.jpg" style={{height:'550px', width:'550px'}}></Image> */}
                     <Slider/>
                   </ImageCSSContainer>
                 </DesContainer>
