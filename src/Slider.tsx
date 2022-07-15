@@ -17,16 +17,13 @@ const SliderContainer = styled.div`
   overflow: hidden;
 `;
 
-// const SlideBox = styled.div`
-//   transform: translateX(${(-1)*(itemSize*currentIndex)}px); 
-//   transitionDuration: 0.2s;
-// `;
 
 const ImgBox =styled.div`
 position: absolute; 
 left: 0;
 display: flex;
 `;
+
 const ShadowBox= styled.div`
   box-shadow:5px 5px 40px 5px rgba(0,0,0,0.5);
 `;

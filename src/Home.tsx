@@ -22,15 +22,17 @@ import {
 import {FaTwitter,FaDiscord,FaShoppingCart} from "react-icons/fa";
 import Slider from './Slider';
 
+
 const cluster = process.env.REACT_APP_SOLANA_NETWORK!.toString();
 const decimals = process.env.REACT_APP_SPL_TOKEN_TO_MINT_DECIMALS ? +process.env.REACT_APP_SPL_TOKEN_TO_MINT_DECIMALS!.toString() : 9;
 const splTokenName = process.env.REACT_APP_SPL_TOKEN_TO_MINT_NAME ? process.env.REACT_APP_SPL_TOKEN_TO_MINT_NAME.toString() : "TOKEN";
-const WalletContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-`;
+
+// const WalletContainer = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   flex-wrap: wrap;
+//   justify-content: center;
+// `;
 
 const WalletAmount = styled.div`
   color: white;
@@ -130,12 +132,12 @@ const Text2 = styled.div`
     }
 `
 
-const NFT = styled.div`// MAIN뒤에 네모 
-  min-width: 420px;
-  padding: 5px 20px 20px 20px;
-  flex: 1 1 auto;
-  color: white;
-`;
+// const NFT = styled.div`// MAIN뒤에 네모 
+//   min-width: 420px;
+//   padding: 5px 20px 20px 20px;
+//   flex: 1 1 auto;
+//   color: white;
+// `;
 
 const Card = styled(Paper)`
   display: inline-block;
@@ -171,21 +173,21 @@ const MintButtonContainer = styled.div`
 
 `;
 
-const SolExplorerLink = styled.a`
-  color: var(--title-text-color);
-  border-bottom: 1px solid var(--title-text-color);
-  font-weight: bold;
-  list-style-image: none;
-  list-style-position: outside;
-  list-style-type: none;
-  outline: none;
-  text-decoration: none;
-  text-size-adjust: 100%;
+// const SolExplorerLink = styled.a`
+//   color: var(--title-text-color);
+//   border-bottom: 1px solid var(--title-text-color);
+//   font-weight: bold;
+//   list-style-image: none;
+//   list-style-position: outside;
+//   list-style-type: none;
+//   outline: none;
+//   text-decoration: none;
+//   text-size-adjust: 100%;
 
-  :hover {
-    border-bottom: 2px solid var(--title-text-color);
-  }
-`;
+//   :hover {
+//     border-bottom: 2px solid var(--title-text-color);
+//   }
+// `;
 
 const MainContainer = styled.div`
     display: flex;
@@ -285,70 +287,73 @@ const ImageCSSContainer = styled.div`
   
 `;
 
-const Price = styled(Chip)`
-  position: absolute;
-  margin: 5px;
-  font-weight: bold;
-  font-size: 1em !important;
-`;
+// const Price = styled(Chip)`
+//   position: absolute;
+//   margin: 5px;
+//   font-weight: bold;
+//   font-size: 1em !important;
+// `;
 
-const BorderLinearProgress = styled(LinearProgress)`
-  margin: 20px 0;
-  height: 10px !important;
-  border-radius: 30px;
-  border: 2px solid white;
-  box-shadow: 5px 5px 40px 5px rgba(0,0,0,0.5);
-  background-color:var(--main-text-color) !important;
+// const BorderLinearProgress = styled(LinearProgress)`
+//   margin: 20px 0;
+//   height: 10px !important;
+//   border-radius: 30px;
+//   border: 2px solid white;
+//   box-shadow: 5px 5px 40px 5px rgba(0,0,0,0.5);
+//   background-color:var(--main-text-color) !important;
   
-  > div.MuiLinearProgress-barColorPrimary{
-    background-color:var(--title-text-color) !important;
-  }
+//   > div.MuiLinearProgress-barColorPrimary{
+//     background-color:var(--title-text-color) !important;
+//   }
 
-  > div.MuiLinearProgress-bar1Determinate {
-    border-radius: 30px !important;
-    background-image: linear-gradient(270deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.5));
-  }
-`;
+//   > div.MuiLinearProgress-bar1Determinate {
+//     border-radius: 30px !important;
+//     background-image: linear-gradient(270deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.5));
+//   }
+// `;
 
-const ShimmerTitle = styled.h1`
-  margin: 50px auto;
-  text-transform: uppercase;
-  animation: glow 2s ease-in-out infinite alternate;
-  color: var(--main-text-color);
-  @keyframes glow {
-    from {
-      text-shadow: 0 0 20px var(--main-text-color);
-    }
-    to {
-      text-shadow: 0 0 30px var(--title-text-color), 0 0 10px var(--title-text-color);
-    }
-  }
-`;
+// const ShimmerTitle = styled.h1`
+//   margin: 50px auto;
+//   text-transform: uppercase;
+//   animation: glow 2s ease-in-out infinite alternate;
+//   color: var(--main-text-color);
+//   @keyframes glow {
+//     from {
+//       text-shadow: 0 0 20px var(--main-text-color);
+//     }
+//     to {
+//       text-shadow: 0 0 30px var(--title-text-color), 0 0 10px var(--title-text-color);
+//     }
+//   }
+// `;
 
 
-const GoldTitle = styled.h2`
-  color: var(--title-text-color);
-  font-family: 'Roboto Serif', sans-serif;
-`;
+// const GoldTitle = styled.h2`
+//   color: var(--title-text-color);
+//   font-family: 'Roboto Serif', sans-serif;
+// `;
 
-const LogoAligner = styled.div`
-  display: flex;
-  align-items: center;
+// const LogoAligner = styled.div`
+//   display: flex;
+//   align-items: center;
 
-  img {
-    max-height: 35px;
-    margin-right: 10px;
-  }
-`;
+//   img {
+//     max-height: 35px;
+//     margin-right: 10px;
+//   }
+// `;
 
 const ProgressBar = styled.div`
     width: 100%;
     height: 30px;
     background-color: #dedede;
+    border-radius:12px;
     font-weight: 600;
     font-size: .8rem;
     margin-top: 20px;
+    overflow: hidden;
 `;
+
 interface ITest{
     width: number,
 } 
@@ -384,6 +389,7 @@ const Home = (props: HomeProps) => {
     const [whitelistPrice, setWhitelistPrice] = useState(0);
     const [whitelistEnabled, setWhitelistEnabled] = useState(false);
     const [whitelistTokenBalance, setWhitelistTokenBalance] = useState(0);
+    const [isWhitelist, setIsWhitelist] = useState(false);  //whitelist인지아닌지
 
     const [alertState, setAlertState] = useState<AlertState>({
         open: false,
@@ -585,89 +591,89 @@ const Home = (props: HomeProps) => {
         }
     };
 
-    const onMint_1 = async () => {
-        try {
-            setIsMinting(true);
-            if (wallet && candyMachine?.program && wallet.publicKey) {
-                const mintTxId: any = (
-                    await mintOneToken_2(candyMachine, wallet.publicKey)
-                );
+    // const onMint_1 = async () => {
+    //     try {
+    //         setIsMinting(true);
+    //         if (wallet && candyMachine?.program && wallet.publicKey) {
+    //             const mintTxId: any = (
+    //                 await mintOneToken_2(candyMachine, wallet.publicKey)
+    //             );
 
-                const promiseArray = [];
+    //             const promiseArray = [];
 
-                for (let index = 0; index < mintTxId.length; index++) {
-                    promiseArray.push(
-                        awaitTransactionSignatureConfirmation(
-                            mintTxId[index],
-                            props.txTimeout,
-                            props.connection,
-                            'singleGossip',
-                            true
-                            )
-                        );
-                }
+    //             for (let index = 0; index < mintTxId.length; index++) {
+    //                 promiseArray.push(
+    //                     awaitTransactionSignatureConfirmation(
+    //                         mintTxId[index],
+    //                         props.txTimeout,
+    //                         props.connection,
+    //                         'singleGossip',
+    //                         true
+    //                         )
+    //                     );
+    //             }
 
-                const allTransactionsResult = await Promise.all(promiseArray);
-                let totalSuccess = 0;
-                let totalFailure = 0;
-                for (let index = 0; index < allTransactionsResult.length; index++) {
-                    const transactionStatus = allTransactionsResult[index];
-                    if (!transactionStatus?.err) {
-                        totalSuccess += 1;
-                    } else {
-                        totalFailure += 1;
-                    }
-                }
-                if (totalSuccess) {
-                    setAlertState({
-                        open: true,
-                        message: `Congratulations! ${totalSuccess} mints succeeded!`,
-                        severity: 'success',
-                    });
-                    // update front-end amounts
-                    displaySuccess_2();
-                }
+    //             const allTransactionsResult = await Promise.all(promiseArray);
+    //             let totalSuccess = 0;
+    //             let totalFailure = 0;
+    //             for (let index = 0; index < allTransactionsResult.length; index++) {
+    //                 const transactionStatus = allTransactionsResult[index];
+    //                 if (!transactionStatus?.err) {
+    //                     totalSuccess += 1;
+    //                 } else {
+    //                     totalFailure += 1;
+    //                 }
+    //             }
+    //             if (totalSuccess) {
+    //                 setAlertState({
+    //                     open: true,
+    //                     message: `Congratulations! ${totalSuccess} mints succeeded!`,
+    //                     severity: 'success',
+    //                 });
+    //                 // update front-end amounts
+    //                 displaySuccess_2();
+    //             }
 
-                if (totalFailure) {
-                    setAlertState({
-                        open: true,
-                        message: `Some mints failed! ${totalFailure} mints failed!`,
-                        severity: 'error',
-                    });
-                    // update front-end amounts
-                    displaySuccess_2();
-                }
+    //             if (totalFailure) {
+    //                 setAlertState({
+    //                     open: true,
+    //                     message: `Some mints failed! ${totalFailure} mints failed!`,
+    //                     severity: 'error',
+    //                 });
+    //                 // update front-end amounts
+    //                 displaySuccess_2();
+    //             }
 
-            }
-        } catch (error: any) {
-            // TODO: blech:
-            let message = error.msg || 'Minting failed! Please try again!';
-            if (!error.msg) {
-                if (!error.message) {
-                    message = 'Transaction Timeout! Please try again.';
-                } else if (error.message.indexOf('0x138')) {
-                } else if (error.message.indexOf('0x137')) {
-                    message = `SOLD OUT!`;
-                } else if (error.message.indexOf('0x135')) {
-                    message = `Insufficient funds to mint. Please fund your wallet.`;
-                }
-            } else {
-                if (error.code === 311) {
-                    message = `SOLD OUT!`;
-                } else if (error.code === 312) {
-                    message = `Minting period hasn't started yet.`;
-                }
-            }
+    //         }
+    //     } catch (error: any) {
+    //         // TODO: blech:
+    //         let message = error.msg || 'Minting failed! Please try again!';
+    //         if (!error.msg) {
+    //             if (!error.message) {
+    //                 message = 'Transaction Timeout! Please try again.';
+    //             } else if (error.message.indexOf('0x138')) {
+    //             } else if (error.message.indexOf('0x137')) {
+    //                 message = `SOLD OUT!`;
+    //             } else if (error.message.indexOf('0x135')) {
+    //                 message = `Insufficient funds to mint. Please fund your wallet.`;
+    //             }
+    //         } else {
+    //             if (error.code === 311) {
+    //                 message = `SOLD OUT!`;
+    //             } else if (error.code === 312) {
+    //                 message = `Minting period hasn't started yet.`;
+    //             }
+    //         }
 
-            setAlertState({
-                open: true,
-                message,
-                severity: "error",
-            });
-        } finally {
-            setIsMinting(false);
-        }
-    };
+    //         setAlertState({
+    //             open: true,
+    //             message,
+    //             severity: "error",
+    //         });
+    //     } finally {
+    //         setIsMinting(false);
+    //     }
+    // };
 
 
     useEffect(() => {
@@ -690,7 +696,7 @@ const Home = (props: HomeProps) => {
     <div id="header">
         <nav className="navbar">
             <div className="navbar_logo">
-                <a href="adrress"> <img src="logo1.svg" alt="Logo" style={{height:'35px'}}/> </a>
+                <a href="adrress"> <img src="logo.jpg" alt="Logo" style={{height:'55px'}}/> </a>
             </div>
             <div className="navbar2">
                 <ul className="navbar_icons">
@@ -715,10 +721,10 @@ const Home = (props: HomeProps) => {
             <MainContainer>
                 <TextContainer>
                         <Text>
-                            <h1>WEEABOO NFT</h1>
+                            <h1>MoonSnails NFT</h1>
                         </Text>
                         <Text1>
-                            <h3>Weeaboo nft's vision is to build an inclusive web3 through its collection and community. 
+                            <h3>MoonSnails nft's vision is to build an inclusive web3 through its collection and community. 
                                 According to research published in July. 2022. We can create opportunities for anyone around the world
                                 to be owners, creators and contributors in this new era of the web.</h3>
                         </Text1>
@@ -772,6 +778,7 @@ const Home = (props: HomeProps) => {
                                             isActive={isActive}
                                             isSoldOut={isSoldOut}
                                             onMint={onMint}
+                                            isWhitelist={isWhitelist}
                                         />
                                     </GatewayProvider>
                                 ) : (
@@ -782,11 +789,10 @@ const Home = (props: HomeProps) => {
                                         isActive={isActive}
                                         isSoldOut={isSoldOut}
                                         onMint={onMint}
+                                        isWhitelist={isWhitelist}
                                     />
                                     </MintButtonContainer>
-
                                 ))}
-                   
                 </TextContainer>
                 <DesContainer>
                   <ImageCSSContainer>
