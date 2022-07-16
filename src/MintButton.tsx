@@ -72,7 +72,8 @@ export const MintButton = ({
             variant="contained"
         >
             {!candyMachine ? (
-                <Image src="connect.gif"/> // 지갑 connect후 버튼들
+                // <Image src="connect.gif"/> // 지갑 connect후 버튼들
+                "connecting..."
             ) : candyMachine?.state.isSoldOut || isSoldOut ? (
                 "Sold Out!"
                 // "Thanks for your interest. Sold out!"

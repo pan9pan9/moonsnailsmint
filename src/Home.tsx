@@ -191,7 +191,7 @@ const MintButtonContainer = styled.div`
 
 const MainContainer = styled.div`
     display: flex;
-    margin: 30px 100px;
+    margin: 30px 80px;
 `;
 
 const Text = styled.div`
@@ -211,6 +211,9 @@ const Text = styled.div`
     animation-fill-mode: forwards;
 
 opacity: 0;
+h1{
+    line-height: 0.8em; 
+}
 `;
 
 const Text1 = styled.div`
@@ -229,11 +232,13 @@ const Text1 = styled.div`
     animation-delay: 1.1s;
     animation-fill-mode: forwards;
     opacity: 0;
+
     `;
 
 const TextContainer = styled.div`
     width: 600px;
     position: relative;
+    bottom:40px;
     display: flex;
     flex-flow: column;
     text-align: center;
@@ -266,26 +271,7 @@ const DesContainer = styled.div`
     width: 700px
 `;
 
-const ImageCSSContainer = styled.div`
-  :before{
-    position:absolute;
-    color: rgb(170,170,170,0.5);
-    bottom:-55px;
-    left: 30px;
-    font-size:74px;
-    content:'ㄴ';
-    
-  }
-  :after{
-    position:absolute;
-    color: rgb(170,170,170,0.5);
-    top:-55px;
-    right: 28px;
-    font-size:74px;
-    content: 'ㄱ';
-  }
-  
-`;
+
 
 // const Price = styled(Chip)`
 //   position: absolute;
@@ -389,7 +375,8 @@ const Home = (props: HomeProps) => {
     const [whitelistPrice, setWhitelistPrice] = useState(0);
     const [whitelistEnabled, setWhitelistEnabled] = useState(false);
     const [whitelistTokenBalance, setWhitelistTokenBalance] = useState(0);
-    const [isWhitelist, setIsWhitelist] = useState(false);  //whitelist인지아닌지
+    const [isWhitelist, setIsWhitelist] = useState(true);  //whitelist에 있는가?
+    const [isMinted, setIsMinted] = useState(false); // minting을 했는가?
 
     const [alertState, setAlertState] = useState<AlertState>({
         open: false,
@@ -713,6 +700,7 @@ const Home = (props: HomeProps) => {
         </nav>
     </div>) 
     }
+    
 
     return (
         <main>
@@ -795,9 +783,7 @@ const Home = (props: HomeProps) => {
                                 ))}
                 </TextContainer>
                 <DesContainer>
-                  <ImageCSSContainer>
                     <Slider/>
-                  </ImageCSSContainer>
                 </DesContainer>
             </MainContainer>
             <Snackbar
