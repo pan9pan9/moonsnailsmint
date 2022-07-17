@@ -80,6 +80,7 @@ h3{
 .navbar_icons {
   list-style: none;
   display: flex; 
+  margin-right: 5px;
 }
 
 .navbar_icons li {

@@ -25,7 +25,8 @@ export const MintButton = ({
                                isMinting,
                                isActive,
                                isSoldOut,
-                               isWhitelist
+                               isWhitelist,
+                               isMinted
                            }: {
     onMint: () => Promise<void>;
     candyMachine: CandyMachine | undefined;
@@ -33,6 +34,7 @@ export const MintButton = ({
     isActive: boolean;
     isSoldOut: boolean;
     isWhitelist: boolean;
+    isMinted:boolean;
 }) => {
     const {requestGatewayToken, gatewayStatus} = useGateway();
     const [clicked, setClicked] = useState(false);
@@ -57,8 +59,9 @@ export const MintButton = ({
                 isMinting ||
                 !isActive ||
                 isVerifying||
-                !isWhitelist
-            }
+                !isWhitelist||
+                isMinted
+            }// 하나라도 true이면 사용못함
             onClick={async () => {
                 if (isActive && candyMachine?.state.gatekeeper && gatewayStatus !== GatewayStatus.ACTIVE) {
                     console.log('Requesting gateway token');
@@ -82,7 +85,8 @@ export const MintButton = ({
                     isMinting ? (
                         <CircularProgress/>
                     ) : ( 
-                        isWhitelist? "MINT NOW!" : "Not Subject to Whitelist"
+                        !isWhitelist? "Not Subject to Whitelist" :
+                            isMinted? "Already Minted" : "MINT NOW!"
                         
                     )
             ) : (candyMachine?.state.goLiveDate ? (
