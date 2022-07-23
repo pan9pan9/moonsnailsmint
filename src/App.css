@@ -108,3 +108,25 @@ h3{
 .nonScroll{
   overflow:hidden;
 } */
+
+.SoloveMintinfo1{
+  font-family:'Poppins';
+  font-size: 1.2em; 
+  -webkit-user-select:none; 
+  -moz-user-select:none; 
+  -ms-user-select:none; 
+  user-select:none;
+  color: #000000;
+  padding-right: 30px;
+}
+
+.Select{
+  color : #000000;
+  padding: 10px;
+  width: 200px;
+  background-color: white;
+  border-radius: 2px;
+  border: none;
+  box-shadow: 0px 1px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 2px 0px rgb(0 0 0 / 12%);
+  text-align: center;
+}

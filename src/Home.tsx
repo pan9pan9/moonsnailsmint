@@ -344,6 +344,8 @@ interface ITest{
     width: number,
 } 
 
+
+
 const Progress = styled.div`
     width: ${(props:ITest) => props.width}%; 
     height: 30px;
@@ -503,6 +505,30 @@ const Home = (props: HomeProps) => {
         throwConfetti();
     };
 
+    //counter
+
+    const Counter = () => {
+        const selectList = ['1', '2'];
+        const [Selected, setSelected] = useState('1');
+        const handleSelect = (e:any) => {
+        setSelected(e.target.value);
+      };
+
+          return (
+            <div>
+                <div className = "Btn_info">
+                    <span className="SoloveMintinfo1">
+                        Balance : 
+                    </span>
+                <select className="Select" onChange={handleSelect} value={Selected}> 
+                  {selectList.map((item) => (
+                  <option value={item} key={item}> {item}</option>))}
+                </select>
+            </div>
+            </div> 
+        );
+      };
+
     function throwConfetti(): void {
         confetti({
             particleCount: 400,
@@ -510,6 +536,7 @@ const Home = (props: HomeProps) => {
             origin: {y: 0.6},
         });
     }
+    
 
     const onMint = async () => {
         try {
@@ -575,8 +602,8 @@ const Home = (props: HomeProps) => {
             });
         } finally {
             setIsMinting(false);
-        }
-    };
+    }
+};
 
     // const onMint_1 = async () => {
     //     try {
@@ -687,7 +714,7 @@ const Home = (props: HomeProps) => {
             </div>
             <div className="navbar2">
                 <ul className="navbar_icons">
-                    <li><a href="twittericon" target="_blank"><FaTwitter/></a></li>
+                    <li><a href="twittericon" target="https://twitter.com/MoonsnailsNFT"><FaTwitter/></a></li>
                     <li><a href="discordicon" target="_blank"><FaDiscord/></a></li>
                     <li><a href="shoppingicon" target="_blank"><FaShoppingCart/></a></li>
                 </ul>    
@@ -726,7 +753,10 @@ const Home = (props: HomeProps) => {
                             </ProgressBar>
                                 
                             <h3>Minting Progress : {100-(itemsRemaining*100/itemsAvailable)}%</h3>
-                        </div>}
+                            <Counter></Counter>
+                            <br/>
+                        </div>
+                        }
                         
                         {!isActive && candyMachine?.state.goLiveDate ? (
                             <Countdown
@@ -740,6 +770,7 @@ const Home = (props: HomeProps) => {
                             !wallet ? (
                                     <ConnectButton3><Text2></Text2></ConnectButton3>
                                 ) :
+                                //민트버튼 위치
                                 candyMachine?.state.gatekeeper &&
                                 wallet.publicKey &&
                                 wallet.signTransaction ? (
@@ -806,3 +837,4 @@ const Home = (props: HomeProps) => {
 };
 
 export default Home;
+
